@@ -34,8 +34,9 @@
 
 %%% Listings options
 \lstdefinelanguage{Renhanced}[]{R}{
+  otherkeywords={!,!=,~,$,*,\&,\%/\%,\%*\%,\%\%,<-,<<-,/, ::},
   morekeywords={},
-  deletekeywords={hist, runif, plot, data.table, read.table},
+  deletekeywords={hist, runif, plot, data.table, read.table, read, check, text, file, attributes},
   alsoletter={.\%},%
   alsoother={:_\$}}
 
@@ -61,7 +62,7 @@
   stringstyle=\color{ForestGreen}      % string literal style
 } 
 
-\renewcommand{\lstlistingname}{Code}
+\renewcommand{\lstlistingname}{Code-Chunk}
 
 %%% New commands
 \newcommand{\li}{\lstinline}
@@ -220,6 +221,7 @@ runApp(app)
 It is now possible to see in Code-Chunk \ref{code:exampleapp} that both the UI and server elements are R objects, while the server also resembles an R function. \li{runApp()} then opens up the Application.
 
 \subsection{Shiny Gadgets and RStudio Add-Ins}
+\label{shinyrstudiochapter}
 
 Shiny Applications are useful for displaying interactive visualisations, but they are made for displaying results to the end user. ``Shiny Gadgets"\footnote{\url{http://shiny.rstudio.com/articles/gadgets.html}}, an extension of the Shiny framework, are supposed to be part of the programming or analysing process. They are built on the same framework that was introduced with Shiny, but serve the purpose of making programming challenges a little easier. For example, a Shiny Gadget could be used to provide a UI for downloading certain data from complex websites. 
 
@@ -234,10 +236,82 @@ The following functions are implemented:
 
 \begin{itemize}
 \item \li{GREA()}
+\item \li{GREA_read()}
+\item \li{wd_check()}
+\item \li{fileChoose()}
 \end{itemize}
 
+As stated above, \li{GREA::GREA()} is the function that starts the Add-In. \li{GREA::GREA_read()} is the most important helper function, which converts any filetype into the data.frame R class inside the global environment. For checking if a file is inside the current R working directory, \li{GREA::wd_check()} was written. This function arose from my personal frustration with large filepaths. \li{GREA::fileChoose()} has the same utility as \li{base::file.choose()} (choosing a file interactively), except that it returns \li{NULL} when cancelled.
+
 \subsection{The Main Function: \textrm{GREA()}}
+As explained in Chapter \ref{shinyrstudiochapter}, Add-Ins are built on the Shiny Framework. \li{GREA()} is therefore also a wrapper for a Shiny Application. In this section, the general structure of the function will be demonstrated.
+
+\begin{lstlisting}[caption = Structure of the \li{GREA()} function, label = greacode]
+GREA <- function() {
+  ui <- miniPage(
+    # User Interface Functions #
+    # ...
+  )
+  server <- shinyServer(function(input, output, session) {
+    # Reactive Server Functions #
+    # ...
+    observeEvent(input$done, {
+      # Functions that paste the code into the console
+    })
+  })
+  # Functions that start the Add-In
+  app <- shinyApp(ui = ui, server = server)
+  viewer <- dialogViewer(dialogName = "GREA", 
+                         height = 350, width = 500)
+  runGadget(app, viewer = viewer, stopOnCancel = FALSE)
+}
+\end{lstlisting}
+
+Code-Chunk \ref{greacode} shows the structure of GREA's main function. Similarly to Shiny Applications, we can see that the \li{ui}(lines 2-5) and \li{server}(lines 6-12) objects are specified first. For creating the \li{ui} object, the \li{miniUI::miniPage()} function from the miniUI package (cite??) is used, which is specifically targeted at small user interfaces in the style of smartphone apps. The \li{server} object, also resembling an R function, consists of reactive functions that are called every time the user interacts with the UI. This includes the selection of a file to be read in on the user's computer, or the adjustment of reading conditions (e.g. a change in the comma seperator in text-delimited files).
+
+Next, both objects are assembled to a new object called \li{app}(line 14). In lines 15 and 16, an object named \li{viewer} is generated via \li{shiny::dialogViewer()}. This step ensures that GREA is started as an integrated window in RStudio with the right height and width. In the end, the function \li{runGadget()}(line 17) is called to start the Add-In. In essence, this function has the same functionality as the \li{shiny::runApp()} function, with the addition of better automatic handling in the event of the user cancelling the app.
+
+The piece of code that sets this Add-In apart from Shiny applications and Shiny Gadgets is resembled by the contents of lines 9-11, a function which is run when the user presses the ``done" button.
+
+\begin{lstlisting}[caption = Contents of reactive function for ``Done"-event, label = doneeventcode]
+observeEvent(input$done, {
+  # Paste Code into Console
+  if (nzchar(fileloc()) && nzchar(input$name_dataset) && !is.null(dataset())) {
+    # Get code that was used to read dataset
+    expr <- attributes(dataset())$GREAcommand
+    # Assemble code
+    code <- paste0(input$name_dataset, " <- ", expr)
+    # Paste into Console
+    rstudioapi::insertText(text = code, id = "#console")
+  }
+  # ... and then stop the app
+  stopApp()
+})
+\end{lstlisting}
+
+Code-Chunk \ref{doneeventcode} shows the detailed contents of lines 9-11 in Code-Chunk \ref{greacode}. After the user has specified all necessary variables interactively, she/he presses the ``done" button. This triggers the event called \li{input$done}, which leads to the above function being called.
+
+Line 3 checks if three conditions are met: 
+\begin{enumerate}
+\item A file location is correctly specified.
+\item A dataset name is correctly specified.
+\item Reading the dataset with the options provided by the user is successful.
+\end{enumerate}
+
+These conditions make sure that the user doesn't obtain code for reading a file which will yield an error. If and only if these conditions are met, the code to read the data is assembled (lines 5-7)  and then pasted into the R console (line 9). The procedure to paste the code into the console makes use of the \li{insertText()} function from the ``rstudioapi" package, previously mentioned in Chapter \ref{shinyrstudiochapter}. After this procedure, the user obtains the code to read the specified file and only has to execute the command to attach the new data to R's global environment.
+
+irgendwo muss hier noch rein was alles dazwischen passiert und wo sozusagen die specifications sind vor allem im server
+
+vielleicht implementation vor das andere packen?
+
 \subsection{The File Reading Function: \textrm{GREA\_read()}}
+Chapter blabla explained the implementation of the main function, \li{GREA::GREA()}. The core to this function is the function that reads filetypes into R.
+Writing this function was the most challenging, as it had to fulfill the following requirements at once:
+\begin{enumerate}
+\item Read a filetype and convert it to an R object
+\item Keep the code after a successful reading 
+\item Omit rarely used arguments in the code that should be pasted into the console
+\end{enumerate}
 \subsection{Helper Functions}
 \section{Usage}
 
@@ -257,7 +331,7 @@ Available: \url{https://cran.r-project.org/index.html}
 
 \bibitem{w2}
 W. Chang et al (2016).
-\emph{shiny: Web Application Framework for R. R package version 0.13.2}.
+\emph{shiny: Web Application Framework for R}. R package version 0.13.2.
 \url{https://CRAN.R-project.org/package=shiny}
 
 \end{singlespace}
