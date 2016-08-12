@@ -34,9 +34,9 @@
 
 %%% Listings options
 \lstdefinelanguage{Renhanced}[]{R}{
-  otherkeywords={!,!=,~,$,*,\&,\%/\%,\%*\%,\%\%,<-,<<-,/, ::},
+  otherkeywords={!,!=,~,$,*,\&,\%/\%,\%*\%,\%\%,<-,<<-, ::},
   morekeywords={},
-  deletekeywords={hist, runif, plot, data.table, read.table, read, check, text, file, attributes},
+  deletekeywords={hist, runif, plot, data.table, read.table, read, check, text, file, attributes, quote, missing, c, list, any, which, na, deparse, structure, install},
   alsoletter={.\%},%
   alsoother={:_\$}}
 
@@ -244,6 +244,7 @@ The following functions are implemented:
 As stated above, \li{GREA::GREA()} is the function that starts the Add-In. \li{GREA::GREA_read()} is the most important helper function, which converts any filetype into the data.frame R class inside the global environment. For checking if a file is inside the current R working directory, \li{GREA::wd_check()} was written. This function arose from my personal frustration with large filepaths. \li{GREA::fileChoose()} has the same utility as \li{base::file.choose()} (choosing a file interactively), except that it returns \li{NULL} when cancelled.
 
 \subsection{The Main Function: \textrm{GREA()}}
+\label{mainfunctionchapter}
 As explained in Chapter \ref{shinyrstudiochapter}, Add-Ins are built on the Shiny Framework. \li{GREA()} is therefore also a wrapper for a Shiny Application. In this section, the general structure of the function will be demonstrated.
 
 \begin{lstlisting}[caption = Structure of the \li{GREA()} function, label = greacode]
@@ -305,15 +306,82 @@ irgendwo muss hier noch rein was alles dazwischen passiert und wo sozusagen die 
 vielleicht implementation vor das andere packen?
 
 \subsection{The File Reading Function: \textrm{GREA\_read()}}
-Chapter blabla explained the implementation of the main function, \li{GREA::GREA()}. The core to this function is the function that reads filetypes into R.
-Writing this function was the most challenging, as it had to fulfill the following requirements at once:
+Chapter \ref{mainfunctionchapter} explained the implementation of the main function, \li{GREA::GREA()}. Though this function is the cornerstone of the overall Add-In, it relies heavily on a function that reads filetypes into R, \li{GREA::GREA_read()}. Writing this function was challenging, as it had to fulfill the following requirements at once:
+
 \begin{enumerate}
-\item Read a filetype and convert it to an R object
-\item Keep the code after a successful reading 
-\item Omit rarely used arguments in the code that should be pasted into the console
+\item Read a filetype and convert it to an R object.
+\item Keep the code after a successful reading and attach it to the R object.
+\item Omit rarely used arguments in the code that should be pasted into the console (e.g. \li{NA} values).
 \end{enumerate}
+
+Requirement 1 is the goal that many R reading functions want to achieve. Requirement 2 is necessary, because after successful interactive parsing, the right code should be pasted into the active R console. Requirement 3 was included, because only the reading conditions that are not default values should be included in the code that the user obtains in the end.
+
+To fulfill Requirement 1, \li{GREA_read()} automatically detects the filetype of the selected file. Then, depending on which filetype was detected, it utilizes the following functions from other packages to read data:
+
+\begin{itemize}
+\item \li{base::read.table()} for text-delimited files (e.g. .csv, .txt, etc),
+\item \li{R.matlab::readMat()} for .mat files (MATLAB),
+\item and \li{rio::import()} for all other filetypes.
+\end{itemize}
+
+After detecting the filetype and selecting the right function for reading, a ``call" is assembled. In general, an R call is an executed or non-executed command. In this case, the command is created depending on the arguments that the user specified. To show the procedure, an example code snippet is provided below.
+
+\begin{lstlisting}[caption = Reading procedure of \li{GREA_read()}, label = readingprocedure]
+else if (any(filetype == c("xls", "xlsx"))) {
+      expr <- quote(rio::import())
+      expr[c("file", "which")] <- list(filelocation, sheetIndex)
+      if (!missing(na.values))
+        expr[c("na")] <- na.values
+      if (skip > 0)
+        expr[c("skip")] <- skip
+    }
+\end{lstlisting}
+
+In Line 1 of Code-Chunk \ref{readingprocedure}, the condition for the selected file being of an Excel type (.xls, .xlsx) is examined. Once the condition is met, Line 2 utilizes the \li{base::quote()} function, which creates a non-executed call of the first argument, in this case \li{rio::import()}. In Line 3, the arguments \li{file} (filelocation) and \li{which} (which of the Excel sheets should be parsed) are specified using the arguments of \li{GREA::GREA_read()}. Lines 4-7 fulfill Requirement 3 which was specified at the beginning of this chapter: For rare function arguments, these arguments should only be included when they are explicitly specified. In this case, arguments \li{na} and \li{skip} are only then added to the call (object \li{expr}) when they deviate from default values (\li{na.values} is not a missing argument and \li{skip} is greater than 0).
+
+After the call is assembled correctly, it should not only be executed (Requirement 1), but it should also be attached to the object that was created during the call (Requirement 2). This is achieved by the following code at the end of the function:
+\begin{lstlisting}[caption = Return Command of the \li{GREA_read()} function, label = returnread]
+return(structure(eval(expr), GREAcommand = deparse(expr)))
+\end{lstlisting}
+
+Code-Chunk \ref{returnread} shows the execution of said assembled call. The \li{eval()} command first executes it and the \li{structure()} function then attaches the non-executed call (\li{expr}) to the object that was created, thus fulfilling Requirements 1 and 2. Afterwards, the enhanced object is returned (including its attribute).
+
+Whenever a file is now read into the R environment via \li{GREA_read()}, the code that was used can be accessed.
+
 \subsection{Helper Functions}
+The GREA package features two helper functions: \li{fileChoose()} and \li{wd_check()}. As mentioned before, \li{fileChoose()} is just an enhanced version of \li{base::file.choose()} that returns \li{NULL} if the interactive file selection is cancelled. \li{wd_check} has two tasks. First, it transforms Windows filepaths to a path that can be read by any Operating System. Second, the function checks if a file selected via \li{fileChoose()} lies inside of the current R working environment, thus being able to shorten the filepath while reading files (that is were it got it's name from). The returned object is just another filepath, which is only a subpath if the file lies inside the current R working directory. 
+
 \section{Usage}
+
+\subsection{Requirements}
+
+RStudio Add-Ins require the newest release of RStudio. they can be downloaded here and here.
+
+\subsection{Installation}
+The Add-In was uploaded to GitHub (an open-source code sharing platform), so it can be easily installed. Installation is done via the following code: 
+\begin{lstlisting}[caption = Installation of GREA, label = installationcode]
+if (!require(devtools))
+  install.packages("devtools")
+devtools::install_github("Stan125/GREA")
+\end{lstlisting}
+
+Lines 1-2 of Code-Chunk \ref{installationcode} check if the devtools package is installed and install it if not. After executing Line 3, GREA is installed on the user's computer.
+
+\subsection{Starting the Add-In}
+
+To call the Add-In, the user has to click on the Add-In Tab and select ``Gotta Read Em All". The Add-In itself then pops up.
+
+\subsection{Selecting the Dataset}
+
+As seen in Figure ... Once the Add-In is started up, the user has to press the "Select File" button to select a file on your computer. Then, he/she can type in a name for the name of the dataset in R. A suggestion is made via the selected file's filename. Once the file is loaded into the Add-In, additional options for parsing the file on the right are displayed, depending on the filetype. After the user has made his/her adjustments, he/she can click on the previews tab.
+
+\subsection{The preview window}
+
+hier muss noch schöner geschrieben werden.
+The previews tab shows a preview of what your dataframe would look like if you parsed it with the current settings. If something looks odd (e.g. your column names fell into the first row of the dataset), head back to the first tab. We can see that in our case, the column and decimal separators are wrongly specified. If everything is right, still head back to the first tab. 
+
+\subsection{Adjusting reading conditions}
+If the preview of your dataframe looked off, you now have the chance to adjust some parameters (e.g. Sheet Index for Excel files, or separator for .csv files). Adjust them so your preview looks exactly like you want them to. When you have typed in a name for your newly aquired dataset and are then finished, press "done". Afterwards, the function to read your dataset is pasted into your console. Boom! You're good to go.
 
 
 \clearpage
