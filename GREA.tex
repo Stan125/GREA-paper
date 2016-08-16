@@ -36,7 +36,7 @@
 \lstdefinelanguage{Renhanced}[]{R}{
   otherkeywords={!,!=,~,$,*,\&,\%/\%,\%*\%,\%\%,<-,<<-, ::},
   morekeywords={},
-  deletekeywords={hist, runif, plot, data.table, read.table, read, check, text, file, attributes, quote, missing, c, list, any, which, na, deparse, structure, install},
+  deletekeywords={hist, runif, plot,  , read.table, read, check, text, file, attributes, quote, missing, c, list, any, which, na, deparse, structure, install},
   alsoletter={.\%},%
   alsoother={:_\$}}
 
@@ -159,9 +159,11 @@ Paul \textsc{Wiemann}, M.Sc.\\ % Supervisor's Name
 
 \pagenumbering{Roman}
 
+\clearpage
+
 \listoffigures
 
-\listoftables
+\lstlistoflistings
 
 \clearpage
 
@@ -169,19 +171,19 @@ Paul \textsc{Wiemann}, M.Sc.\\ % Supervisor's Name
 
 \section{Motivation}
 
-R is a statistical software with an almost uncountable number of functions for different statistical methods, procedures and graphs. On the Comprehensive R Archive Network (CRAN) alone, the most popular network for adding new features to R via so called ``packages'', more than 8000 packages are ready to be downloaded\footnote{There were exactly 8895 packages on CRAN at August 4, 2016.}. Each of them provide a variety of functions to solve different tasks. For example, a package called ``Vector Generalized Linear and Additive Models" (or short VGAM) can be easily installed via the R command \li{install.packages("VGAM")} and, once loaded in R, provides functions to estimate a variety of different regression models.
+R is a statistical software with an almost uncountable number of functions for different statistical methods, procedures and graphs. The Comprehensive R Archive Network (CRAN), the most popular network for adding new features to R via so called ``packages'', has more than 8000 different packages ready to be downloaded\footnote{There were exactly 8895 packages on CRAN at August 4, 2016.}. Each of them provide a variety of functions to solve different tasks. For example, a package called ``Vector Generalized Linear and Additive Models" (or short VGAM) can be easily installed via the R command \li{install.packages("VGAM")} and, once loaded in R, provides functions to estimate a variety of different regression models.
 
-These aforementioned packages with the underlying functions make R the popular statistical package it is today. But most of these additional features require some data to be of any use, most prominently regression model estimation functions. There exist datasets shipped with R, but for most academical purposes, external data will be required to generate new insights.
+These aforementioned packages with the underlying functions make R the popular statistical package it is today. But most of these additional features require data to be of any use, most prominently regression model estimation functions. Datasets do exist shipped with R but for most academic purposes, external data will be required to generate new insights.
 
-To read data into R, there are multiple ways, depending on the data type (e.g. .csv, .xlsx) and also the data size (big data, small data). Reading a .csv file, for example, can be achieved via the built-in R function \li{base::read.table("filename.csv")}. Big .csv files can be read very quick with the function \li{data.table::fread("bigfile.csv")} from the data.table package. Other packages provide even more functionality, e.g. for dealing with strings or a smaller number of required arguments inside of a function. Most of those packages are also available on CRAN. 
+There are multiple ways of reading data into R depending on the data type (e.g. .csv, .xlsx) and also the data size (big data, small data). Reading a .csv file, for example, can be achieved via the built-in R function \li{base::read.table("filename.csv")}. Big .csv files can be read very quick with the function \li{data.table::fread("bigfile.csv")} from the data.table package \cite[Dowle et al 2015]{w5}. Other packages provide even more functionality, e.g. for dealing with strings or a smaller number of required arguments inside of a function. Most of those packages are also available on CRAN. 
 
-The availability of packages to read different filetypes in numerous ways is very helpful for the advanced R user, because there is almost no filetype that cannot be read via an R function. But it also poses a problem: If there are so many ways that a user can read a file into R, how will she/he remember all the necessary packages and functions, and their function arguments? This problem is often encountered by new R users, who want to use R's extended functionalities but fail at importing data into their working environment.
+The availability of packages to read different filetypes in numerous ways is very helpful for the advanced R user, because there is almost no filetype that cannot be read via an R function. But it also poses a problem: ff there are so many ways that a user can read a file into R, how will she/he remember all the necessary packages and functions, and their function arguments? This problem is often encountered by new R users who want to use R's extended functionalities but fail at importing data into their working environment.
 
-An answer to this problem is provided by Thomas Leeper's R package called ``rio", which tries to minimize redundancy by wrapping R reading functions into one import \li{rio::import()} and one export function \li{rio::export()}. 
+An answer to this problem is provided by Thomas Leeper's R package called ``rio" \cite[Leeper et al 2016]{w6}, which tries to minimize redundancy by wrapping R reading functions into one import \li{rio::import()} and one export function \li{rio::export()}. 
 
 The R package introduced with this paper takes it one step further. Built on the Shiny Framework and implemented as an RStudio Add-In, ``Gotta Read 'Em All" provides a GUI for reading all different file-formats into R. 
 
-The general process is the following: In the beginning, the user selects a file on her/his computer. After some adjustments (which are done interactively), the proper function to read the file is pasted into the console, with an object name that can be specified by the user. In between, the user can always head to the preview to see what the parsed file would look like with the current options.
+The general process is the following: in the beginning, the user selects a file on her/his computer. After some adjustments (which are done interactively), the proper function to read the file is pasted into the console, with an object name that can be specified by the user. In between, the user can always head to the preview to see what the parsed file would look like with the current options.
 
 Using this Add-In, the user can now read data into R without remembering any code, but still obtains the correct R code to re-parse the data at a later point. 
 
@@ -189,7 +191,7 @@ Using this Add-In, the user can now read data into R without remembering any cod
 
 \subsection{The Shiny Framework}
 
-The Shiny Framework\footnote{\url{http://shiny.rstudio.com}} is in itself an R package designed to create interactive visualisations with R functions and HTML code. The author describes the package as ``combining the computational power of R with the interactivity of the modern web" (citing a web page blabla).The goal is to create applications with clickable interfaces quickly showcasing different scenarios. This is done via reactive R functions, which are run everytime a user interacts with the GUI. 
+The Shiny Framework\footnote{\url{http://shiny.rstudio.com}} is in itself an R package designed to create interactive visualisations with R functions and HTML code. The author describes the package as ``combining the computational power of R with the interactivity of the modern web" \cite[RStudio 2016]{w3}. The goal is to create applications with clickable interfaces quickly showcasing different scenarios. This is done via reactive R functions, which are run everytime a user interacts with the GUI. 
 
 \begin{figure}[h]
 \begin{centering}
@@ -225,7 +227,7 @@ It is now possible to see in Code-Chunk \ref{code:exampleapp} that both the UI a
 
 Shiny Applications are useful for displaying interactive visualisations, but they are made for displaying results to the end user. ``Shiny Gadgets"\footnote{\url{http://shiny.rstudio.com/articles/gadgets.html}}, an extension of the Shiny framework, are supposed to be part of the programming or analysing process. They are built on the same framework that was introduced with Shiny, but serve the purpose of making programming challenges a little easier. For example, a Shiny Gadget could be used to provide a UI for downloading certain data from complex websites. 
 
-``RStudio Add-Ins"\footnote{https://rstudio.github.io/rstudioaddins/} are Shiny Gadgets that are built right into RStudio, an Integrated Developer Environment (IDE) for R. Calling the Shiny Gadget is made easier, as the RStudio user only has to press two buttons. Furthermore, Add-Ins have extended access to RStudio itself via a package called ``rstudioapi". For example, Add-Ins are able to paste a string into the console and can modify the currently opened R script.
+``RStudio Add-Ins"\footnote{https://rstudio.github.io/rstudioaddins/} are Shiny Gadgets that are built right into RStudio, an Integrated Developer Environment (IDE) for R. Calling the Shiny Gadget is made easier, as the RStudio user only has to press two buttons. Furthermore, Add-Ins have extended access to RStudio itself via a package called ``rstudioapi" \cite[Wickham and Allaire 2016]{w7}. For example, Add-Ins are able to paste a string into the console and can modify the currently opened R script.
 
 The combination of the Shiny framework and RStudio add-ins creates the ideal setting for an Add-In that helps the user parse any data format into R. The Shiny Framework provides interactiveness and the RStudio connection makes it easier to call the Application out of an IDE.
 
@@ -241,7 +243,7 @@ The following functions are implemented:
 \item \li{fileChoose()}
 \end{itemize}
 
-As stated above, \li{GREA::GREA()} is the function that starts the Add-In. \li{GREA::GREA_read()} is the most important helper function, which converts any filetype into the data.frame R class inside the global environment. For checking if a file is inside the current R working directory, \li{GREA::wd_check()} was written. This function arose from my personal frustration with large filepaths. \li{GREA::fileChoose()} has the same utility as \li{base::file.choose()} (choosing a file interactively), except that it returns \li{NULL} when cancelled.
+As stated above, \li{GREA::GREA()} is the function that starts the Add-In. \li{GREA::GREA_read()} is the most important helper function, which converts any filetype into the data.frame R class inside the global environment. For checking if a file is inside the current R working directory, \li{GREA::wd_check()} was written. This function was created from my personal frustration with large filepaths. \li{GREA::fileChoose()} has the same utility as \li{base::file.choose()} (choosing a file interactively), except that it returns \li{NULL} when cancelled.
 
 \subsection{The Main Function: \textrm{GREA()}}
 \label{mainfunctionchapter}
@@ -268,7 +270,7 @@ GREA <- function() {
 }
 \end{lstlisting}
 
-Code-Chunk \ref{greacode} shows the structure of GREA's main function. Similarly to Shiny Applications, we can see that the \li{ui}(lines 2-5) and \li{server}(lines 6-12) objects are specified first. For creating the \li{ui} object, the \li{miniUI::miniPage()} function from the miniUI package (cite??) is used, which is specifically targeted at small user interfaces in the style of smartphone apps. The \li{server} object, also resembling an R function, consists of reactive functions that are called every time the user interacts with the UI. This includes the selection of a file to be read in on the user's computer, or the adjustment of reading conditions (e.g. a change in the comma seperator in text-delimited files).
+Code-Chunk \ref{greacode} shows the structure of GREA's main function. Similarly to Shiny Applications, we can see that the \li{ui}(lines 2-5) and \li{server}(lines 6-12) objects are specified first. For creating the \li{ui} object, the \li{miniUI::miniPage()} function from the miniUI package \cite[Cheng 2016]{w4} is used, which is specifically targeted at small user interfaces in the style of smartphone apps. The \li{server} object, also resembling an R function, consists of reactive functions that are called every time the user interacts with the UI. This includes the selection of a file to be read in on the user's computer, or the adjustment of reading conditions (e.g. a change in the comma seperator in text-delimited files).
 
 Next, both objects are assembled to a new object called \li{app}(line 14). In lines 15 and 16, an object named \li{viewer} is generated via \li{shiny::dialogViewer()}. This step ensures that GREA is started as an integrated window in RStudio with the right height and width. In the end, the function \li{runGadget()}(line 17) is called to start the Add-In. In essence, this function has the same functionality as the \li{shiny::runApp()} function, with the addition of better automatic handling in the event of the user cancelling the app.
 
@@ -320,7 +322,7 @@ To fulfill Requirement 1, \li{GREA_read()} automatically detects the filetype of
 
 \begin{itemize}
 \item \li{base::read.table()} for text-delimited files (e.g. .csv, .txt, etc),
-\item \li{R.matlab::readMat()} for .mat files (MATLAB),
+\item \li{R.matlab::readMat()} for .mat files (MATLAB) \cite[Bengtsson 2016]{w8},
 \item and \li{rio::import()} for all other filetypes.
 \end{itemize}
 
@@ -349,13 +351,13 @@ Code-Chunk \ref{returnread} shows the execution of said assembled call. The \li{
 Whenever a file is now read into the R environment via \li{GREA_read()}, the code that was used can be accessed.
 
 \subsection{Helper Functions}
-The GREA package features two helper functions: \li{fileChoose()} and \li{wd_check()}. As mentioned before, \li{fileChoose()} is just an enhanced version of \li{base::file.choose()} that returns \li{NULL} if the interactive file selection is cancelled. \li{wd_check} has two tasks. First, it transforms Windows filepaths to a path that can be read by any Operating System. Second, the function checks if a file selected via \li{fileChoose()} lies inside of the current R working environment, thus being able to shorten the filepath while reading files (that is were it got it's name from). The returned object is just another filepath, which is only a subpath if the file lies inside the current R working directory. 
+The GREA package features two helper functions: \li{fileChoose()} and \li{wd_check()}. As mentioned before, \li{fileChoose()} is just an enhanced version of \li{base::file.choose()} that returns \li{NULL} if the interactive file selection is cancelled. \li{wd_check} has two tasks. First, it transforms Windows filepaths to a path that can be read by any Operating System. Second, the function checks if a file selected via \li{fileChoose()} lies inside of the current R working environment, thus being able to shorten the filepath while reading files (that is were it got its name from). The returned object is just another filepath, which is only a subpath if the file lies inside the current R working directory. 
 
 \section{Usage}
 
 \subsection{Requirements}
 
-RStudio Add-Ins require the newest release of RStudio. they can be downloaded here and here.
+RStudio Add-Ins require the newest release of RStudio\footnote{RStudio can be downloaded here: \url{https://www.rstudio.com}.} and R\footnote{R can be downloaded here for all major platforms: \url{https://www.r-project.org}.}.
 
 \subsection{Installation}
 The Add-In was uploaded to GitHub (an open-source code sharing platform), so it can be easily installed. Installation is done via the following code: 
@@ -369,38 +371,87 @@ Lines 1-2 of Code-Chunk \ref{installationcode} check if the devtools package is 
 
 \subsection{Starting the Add-In}
 
-To call the Add-In, the user has to click on the Add-In Tab and select ``Gotta Read Em All". The Add-In itself then pops up.
+To call the Add-In, the user has to click on the Add-In Tab in RStudio and select ``Gotta Read Em All". The Add-In itself then pops up.
 
 \subsection{Selecting the Dataset}
 
-As seen in Figure ... Once the Add-In is started up, the user has to press the "Select File" button to select a file on your computer. Then, he/she can type in a name for the name of the dataset in R. A suggestion is made via the selected file's filename. Once the file is loaded into the Add-In, additional options for parsing the file on the right are displayed, depending on the filetype. After the user has made his/her adjustments, he/she can click on the previews tab.
+\begin{figure}
+\center
+\includegraphics[scale = 0.7]{figures/step1.png}
+\caption{Selecting a file}
+\label{stepone}
+\end{figure}
+
+Once the Add-In is started up, the user has to press the "Select File" button to select a file on your computer, as seen in Figure \ref{stepone}. Then, he/she can type in a name for the name of the dataset in R. A suggestion is made via the selected file's filename. Once the file is loaded into the Add-In, additional options for parsing the file on the right are displayed, depending on the filetype. After the user has made his/her adjustments, he/she can click on the previews tab.
 
 \subsection{The preview window}
 
-hier muss noch schöner geschrieben werden.
-The previews tab shows a preview of what your dataframe would look like if you parsed it with the current settings. If something looks odd (e.g. your column names fell into the first row of the dataset), head back to the first tab. We can see that in our case, the column and decimal separators are wrongly specified. If everything is right, still head back to the first tab. 
+\begin{figure}
+\center
+\includegraphics{figures/step2.png}
+\caption{Looking at the preview window}
+\label{steptwo}
+\end{figure}
+
+The previews tab (Figure \ref{steptwo}) shows a preview of what the dataframe would look like if the user parsed it with the current settings. If something looks odd (e.g. column names fell into the first row of the dataset), the first tab has to be selected again. We can see that in our case, the column and decimal separators are wrongly specified. If everything is right, it is still recommended to head to the first tab.
 
 \subsection{Adjusting reading conditions}
-If the preview of your dataframe looked off, you now have the chance to adjust some parameters (e.g. Sheet Index for Excel files, or separator for .csv files). Adjust them so your preview looks exactly like you want them to. When you have typed in a name for your newly aquired dataset and are then finished, press "done". Afterwards, the function to read your dataset is pasted into your console. Boom! You're good to go.
+
+\begin{figure}
+\center
+\includegraphics[scale = 0.8]{figures/step3.png}
+\caption{A ready-to use R command created by GREA}
+\label{stepthree}
+\end{figure}
+
+If the preview of the dataframe seemed off, the user now has the chance to adjust some parameters (e.g. Sheet Index for Excel files, or separator for .csv files). Additional optional parameters can be found in the ``Advanced Options" tab. When a name is specified for the newly acquired dataset, the user presses ``done". Afterwards, the function to read the dataset is pasted into the current R console (as seen in Figure \ref{stepthree}), so the user can store it for future use.
 
 
 \clearpage
 
-\section*{Appendix}
-\addcontentsline{toc}{section}{Appendix}
-
 \begin{thebibliography}{59}
 \begin{singlespace}
 
-\bibitem{w1}
-The Comprehensive R Archive Network. (2016) 'Contributed Packages'. \emph{CRAN}.
-Available: \url{https://cran.r-project.org/index.html} 
-[Accessed 4 August 2016].
+\bibitem{w8}
+H. Bengtsson (2016). \emph{R.matlab: Read and Write MAT Files and Call
+MATLAB from Within R}. R package version 3.6.0.
+\url{https://CRAN.R-project.org/package=R.matlab}.
 
 \bibitem{w2}
 W. Chang et al (2016).
 \emph{shiny: Web Application Framework for R}. R package version 0.13.2.
-\url{https://CRAN.R-project.org/package=shiny}
+\url{https://CRAN.R-project.org/package=shiny}.
+
+\bibitem{w4}
+J. Cheng (2016). \emph{miniUI: Shiny UI Widgets for Small Screens}. R
+package version 0.1.1. \url{https://CRAN.R-project.org/package=miniUI}.
+
+\bibitem{w5}
+M. Dowle et al (2015). \emph{data.table: Extension of Data.frame}. R
+package version 1.9.6. \url{https://CRAN.R-project.org/package=data.table}.
+
+\bibitem{w6}
+T. Leeper et al (2016). rio: \emph{A Swiss-army knife for data file I/O}. R package version 0.4.8. 
+\url{https://CRAN.R-project.org/package=rio}.
+
+\bibitem{w3}
+RStudio (2016). 'Powerfully interactive'. \emph{Shiny byRStudio}.
+Available: \url{http://shiny.rstudio.com} 
+[Accessed 16 August 2016].
+
+\bibitem{w1}
+The Comprehensive R Archive Network (2016). 'Contributed Packages'. \emph{CRAN}.
+Available: \url{https://cran.r-project.org/index.html} 
+[Accessed 4 August 2016].
+
+\bibitem{w7}
+H. Wickham and J. Allaire (2016). \emph{rstudioapi: Safely Access the
+RStudio API}. R package version 0.6.
+\url{https://CRAN.R-project.org/package=rstudioapi}.
+
+
+
+
 
 \end{singlespace}
 \end{thebibliography}
