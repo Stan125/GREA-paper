@@ -8,9 +8,9 @@
 \contentsline {subsection}{\numberline {3.3}Helper Functions}{9}{subsection.3.3}
 \contentsline {section}{\numberline {4}Usage}{9}{section.4}
 \contentsline {subsection}{\numberline {4.1}Requirements}{9}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Installation}{10}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.2}Installation}{9}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Starting the Add-In}{10}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}Selecting the Dataset}{10}{subsection.4.4}
 \contentsline {subsection}{\numberline {4.5}The preview window}{11}{subsection.4.5}
-\contentsline {subsection}{\numberline {4.6}Adjusting reading conditions}{12}{subsection.4.6}
+\contentsline {subsection}{\numberline {4.6}Adjusting reading conditions}{11}{subsection.4.6}
 \contentsline {section}{References}{13}{section*.8}

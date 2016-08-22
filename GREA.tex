@@ -175,17 +175,17 @@ R is a statistical software with an almost uncountable number of functions for d
 
 These aforementioned packages with the underlying functions make R the popular statistical package it is today. But most of these additional features require data to be of any use, most prominently regression model estimation functions. Datasets do exist shipped with R but for most academic purposes, external data will be required to generate new insights.
 
-There are multiple ways of reading data into R depending on the data type (e.g. .csv, .xlsx) and also the data size (big data, small data). Reading a .csv file, for example, can be achieved via the built-in R function \li{base::read.table("filename.csv")}. Big .csv files can be read very quick with the function \li{data.table::fread("bigfile.csv")} from the data.table package \cite[Dowle et al 2015]{w5}. Other packages provide even more functionality, e.g. for dealing with strings or a smaller number of required arguments inside of a function. Most of those packages are also available on CRAN. 
+There are multiple ways of reading data into R depending on the data type (e.g. .csv, .xlsx) and also the data size (big data, small data). Reading a .csv file, for example, can be achieved via the built-in R function \li{base::read.table("filename.csv")}. Big .csv files can be read very quickly with the function \li{data.table::fread("bigfile.csv")} from the data.table package \cite[Dowle et al 2015]{w5}. Other packages provide even more functionality, e.g. for dealing with strings or a smaller number of required arguments inside of a function. Most of those packages are also available on CRAN. 
 
-The availability of packages to read different filetypes in numerous ways is very helpful for the advanced R user, because there is almost no filetype that cannot be read via an R function. But it also poses a problem: ff there are so many ways that a user can read a file into R, how will she/he remember all the necessary packages and functions, and their function arguments? This problem is often encountered by new R users who want to use R's extended functionalities but fail at importing data into their working environment.
+The availability of packages to read different filetypes in numerous ways is very helpful for the advanced R user, because there is almost no filetype that cannot be read via an R function. But it also poses a problem: if there are so many ways that a user can read a file into R, how will she/he remember all the necessary packages and functions, and their function arguments? This problem is often encountered by new R users who want to use R's extended functionalities but fail at importing data into their working environment.
 
-An answer to this problem is provided by Thomas Leeper's R package called ``rio" \cite[Leeper et al 2016]{w6}, which tries to minimize redundancy by wrapping R reading functions into one import \li{rio::import()} and one export function \li{rio::export()}. 
+An answer to this problem is provided by Thomas Leeper's R package called ``rio" \cite[Leeper et al 2016]{w6}, which tries to minimize redundancy by wrapping reading functions into one import \li{rio::import()} and one export function \li{rio::export()}. 
 
-The R package introduced with this paper takes it one step further. Built on the Shiny Framework and implemented as an RStudio Add-In, ``Gotta Read 'Em All" provides a GUI for reading all different file-formats into R. 
+The R package introduced with this paper takes it one step further. Built on the Shiny Framework and implemented as an RStudio Add-In, ``Gotta Read 'Em All" provides a General User Interface (GUI) for reading all different file-formats into R. 
 
 The general process is the following: in the beginning, the user selects a file on her/his computer. After some adjustments (which are done interactively), the proper function to read the file is pasted into the console, with an object name that can be specified by the user. In between, the user can always head to the preview to see what the parsed file would look like with the current options.
 
-Using this Add-In, the user can now read data into R without remembering any code, but still obtains the correct R code to re-parse the data at a later point. 
+Using this Add-In, the user can read data into R without remembering any code, but still obtains the correct R code to re-parse the data at a later point. 
 
 \section{Underlying Frameworks}
 
@@ -203,7 +203,7 @@ The Shiny Framework\footnote{\url{http://shiny.rstudio.com}} is in itself an R p
 
 Figure \ref{exampleapp} shows an example Shiny Application, consisting of some user interface (UI) control elements (a select button, and tick boxes) and a graph. The UI is reactive; whenever the user ticks a box or selects a different value in the first box, the graph changes its look. This is built upon reactive functions, which run every time a value inside them changes. The values that are allowed to change are therefore bound to the UI elements.
 
-Shiny Apps consist of two elements: The UI and a ``server" side. The UI includes functions which wrap HTML to build the viewable part of the App, for example buttons and placement of graphs. The server side consists of functions that specify the reactive R functions which create dynamic output displayed on the UI side, and when the functions should be run. Both sides then are able to automatically communicate with each other to create a smooth interactive experience for the user. The code for an example Shiny app is attached below:
+Shiny Apps consist of two elements: The UI and a ``server" side. The UI includes functions which wrap HTML to build the viewable part of the App, for example buttons and placement of graphs. The server side consists of functions that specify the reactive R functions which create dynamic output displayed on the UI side, and when the functions should be run. Both sides then are able to automatically communicate with each other to create a smooth interactive experience for the user. Code for an example Shiny app is attached below:
 
 \begin{lstlisting}[caption = Example code for a Shiny Application\cite{w2}., label = code:exampleapp]
 # Define UI
@@ -274,7 +274,7 @@ Code-Chunk \ref{greacode} shows the structure of GREA's main function. Similarly
 
 Next, both objects are assembled to a new object called \li{app}(line 14). In lines 15 and 16, an object named \li{viewer} is generated via \li{shiny::dialogViewer()}. This step ensures that GREA is started as an integrated window in RStudio with the right height and width. In the end, the function \li{runGadget()}(line 17) is called to start the Add-In. In essence, this function has the same functionality as the \li{shiny::runApp()} function, with the addition of better automatic handling in the event of the user cancelling the app.
 
-The piece of code that sets this Add-In apart from Shiny applications and Shiny Gadgets is resembled by the contents of lines 9-11, a function which is run when the user presses the ``done" button.
+The piece of code that sets this Add-In apart from Shiny applications and Shiny Gadgets is resembled by lines 9-11 of Code-Chunk \ref{greacode}, a function which is run when the user presses the ``done" button.
 
 \begin{lstlisting}[caption = Contents of reactive function for ``Done"-event, label = doneeventcode]
 observeEvent(input$done, {
@@ -302,10 +302,6 @@ Line 3 checks if three conditions are met:
 \end{enumerate}
 
 These conditions make sure that the user doesn't obtain code for reading a file which will yield an error. If and only if these conditions are met, the code to read the data is assembled (lines 5-7)  and then pasted into the R console (line 9). The procedure to paste the code into the console makes use of the \li{insertText()} function from the ``rstudioapi" package, previously mentioned in Chapter \ref{shinyrstudiochapter}. After this procedure, the user obtains the code to read the specified file and only has to execute the command to attach the new data to R's global environment.
-
-irgendwo muss hier noch rein was alles dazwischen passiert und wo sozusagen die specifications sind vor allem im server
-
-vielleicht implementation vor das andere packen?
 
 \subsection{The File Reading Function: \textrm{GREA\_read()}}
 Chapter \ref{mainfunctionchapter} explained the implementation of the main function, \li{GREA::GREA()}. Though this function is the cornerstone of the overall Add-In, it relies heavily on a function that reads filetypes into R, \li{GREA::GREA_read()}. Writing this function was challenging, as it had to fulfill the following requirements at once:
@@ -406,7 +402,6 @@ The previews tab (Figure \ref{steptwo}) shows a preview of what the dataframe wo
 
 If the preview of the dataframe seemed off, the user now has the chance to adjust some parameters (e.g. Sheet Index for Excel files, or separator for .csv files). Additional optional parameters can be found in the ``Advanced Options" tab. When a name is specified for the newly acquired dataset, the user presses ``done". Afterwards, the function to read the dataset is pasted into the current R console (as seen in Figure \ref{stepthree}), so the user can store it for future use.
 
-
 \clearpage
 
 \begin{thebibliography}{59}
@@ -450,6 +445,14 @@ RStudio API}. R package version 0.6.
 \url{https://CRAN.R-project.org/package=rstudioapi}.
 
 
+
+\clearpage
+\thispagestyle{empty}
+\section*{Declaration of Own Work}
+I, Stanislaus Stadlmann, confirm that the work for the following paper with the title: ``Gotta Read 'Em All: An RStudio Add-In to visually read different file-formats into R" was solely undertaken by myself and that no help was provided from other sources as those allowed. All sections of the paper that use quotes or describe an argument or concept developed by another author have been referenced, including all secondary literature used, to show that this material has been adopted to support my thesis.
+
+Göttingen, \today.
+\clearpage
 
 
 

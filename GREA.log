@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.6.27)  16 AUG 2016 17:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.6.27)  22 AUG 2016 17:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -888,50 +888,51 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 240.
  [4] [5] [6]
-[7] [8] [9] <figures/step1.png, id=275, 401.5pt x 300.62312pt>
+[7] [8] [9] <figures/step1.png, id=276, 401.5pt x 300.62312pt>
 File: figures/step1.png Graphic file (type png)
 
 <use figures/step1.png>
-Package pdftex.def Info: figures/step1.png used on input line 380.
+Package pdftex.def Info: figures/step1.png used on input line 376.
 (pdftex.def)             Requested size: 281.04808pt x 210.43474pt.
- [10 <./figures/step1.png>]
-<figures/step2.png, id=286, 297.61188pt x 221.32687pt>
+ <figures/step2.png, id=278, 297.61188pt x 221.32687pt>
 File: figures/step2.png Graphic file (type png)
- <use figures/step2.png>
-Package pdftex.def Info: figures/step2.png used on input line 391.
-(pdftex.def)             Requested size: 297.61115pt x 221.32631pt.
 
-<figures/step3.png, id=288, 528.97626pt x 93.34875pt>
+<use figures/step2.png>
+Package pdftex.def Info: figures/step2.png used on input line 387.
+(pdftex.def)             Requested size: 297.61115pt x 221.32631pt.
+ [10 <./figures/step1.png>]
+<figures/step3.png, id=289, 528.97626pt x 93.34875pt>
 File: figures/step3.png Graphic file (type png)
  <use figures/step3.png>
-Package pdftex.def Info: figures/step3.png used on input line 402.
+Package pdftex.def Info: figures/step3.png used on input line 398.
 (pdftex.def)             Requested size: 423.18158pt x 74.6791pt.
 
-Overfull \hbox (13.46207pt too wide) in paragraph at lines 402--403
+Overfull \hbox (13.46207pt too wide) in paragraph at lines 398--399
  [] 
  []
 
-[11 <./figures/step2.png> <./figures/step3.png>] [12]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 458.
- [13
+[11 <./figures/step2.png> <./figures/step3.png>] [12] [13
+
+] [14
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 458.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 461.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 461.
  (./GREA.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 458.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 458.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 461.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 461.
 Package rerunfilecheck Info: File `GREA.out' has not changed.
 (rerunfilecheck)             Checksum: 72A4F863591A778D205714F12D35BED3;1030.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 458.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 461.
  ) 
 Here is how much of TeX's memory you used:
- 11760 strings out of 493089
- 170799 string characters out of 6134842
+ 11762 strings out of 493089
+ 170816 string characters out of 6134842
  354643 words of memory out of 5000000
  14953 multiletter control sequences out of 15000+600000
  12762 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,12n,50p,914b,1780s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,12n,50p,914b,1844s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.6} has been referenced but does not exi
 st, replaced by a fixed one
 
@@ -962,10 +963,10 @@ live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/local/texl
 ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texli
 ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texliv
 e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on GREA.pdf (16 pages, 1369299 bytes).
+Output written on GREA.pdf (17 pages, 1370363 bytes).
 PDF statistics:
- 383 PDF objects out of 1000 (max. 8388607)
- 339 compressed objects within 4 object streams
- 120 named destinations out of 1000 (max. 500000)
+ 390 PDF objects out of 1000 (max. 8388607)
+ 345 compressed objects within 4 object streams
+ 122 named destinations out of 1000 (max. 500000)
  154 words of extra memory for PDF output out of 10000 (max. 10000000)
 
